@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[2]:
 
 
 import ROOT
@@ -14,7 +14,7 @@ import itertools
 from __future__ import division
 
 
-# In[40]:
+# In[19]:
 
 
 #filenames = ["mag1_nocuts.root", "mag1_250_490.root", "mag1_300_540.root", "mag1_350_590.root"]
@@ -35,10 +35,10 @@ xaxis_afix = [100,125,150,200,250,300,350,400]
 
 filenamelists = [filenames_bfix, filenames_afix]
 xaxislists = [xaxis_bfix, xaxis_afix]
-xlabels = ["a in ellipse IT cuts, b fixed to 125", "b in ellipse IT cuts, a fixed to 300"]
+xlabels = ["a in ellipse IT cuts (mm), b fixed to 125 mm", "b in ellipse IT cuts (mm), a fixed to 300 mm"]
 
 
-# In[41]:
+# In[20]:
 
 
 def get_ghostrate(title1, title2):
@@ -59,7 +59,7 @@ def get_ghostrate(title1, title2):
     return ntot, ghostrate
 
 
-# In[42]:
+# In[21]:
 
 
 #Ghost rate
@@ -105,12 +105,14 @@ for filenamelist in filenamelists:
 
         totnum, ghostratenum = get_ghostrate(current_item1, current_item2)
         ghostrate.append(ghostratenum)
+        #print(filename, (ghostratenum*100))
         totnumber.append(totnum)
         #labelxbar.append((filename.strip(".root")).strip("mag1_"))
         #labelxbar.append((filename.strip(".root")).strip("Reco_magdown_1b_"))
         labelxbar.append((filename.strip(".root")).strip(" Reco_magdown1b_ellipse_"))
     axes[filenamelists.index(filenamelist)].set_title("Ghost rate")
-    axes[filenamelists.index(filenamelist)].plot(xaxis, ghostrate, marker='x', linewidth=1, markersize=10)
+    #axes[filenamelists.index(filenamelist)].plot(xaxis, ghostrate, marker='x', linewidth=1, markersize=10)
+    axes[filenamelists.index(filenamelist)].scatter(xaxis, ghostrate, marker='x', linewidth=1)
     axes[filenamelists.index(filenamelist)].set_xlabel(xlabels[filenamelists.index(filenamelist)])
     axes[filenamelists.index(filenamelist)].set_ylabel("Ghost rate")
 
@@ -121,7 +123,7 @@ for filenamelist in filenamelists:
 plt.show()
 
 
-# In[43]:
+# In[22]:
 
 
 def get_efficiency(title1, title2):
@@ -139,7 +141,7 @@ def get_efficiency(title1, title2):
     return efficiency   
 
 
-# In[44]:
+# In[24]:
 
 
 #efficiencies
@@ -156,8 +158,8 @@ end_path2 = "Eta_reconstructible"
 
 
 fig, axes = plt.subplots(len(filenamelists),len(types))
-fig.set_figheight(10)
-fig.set_figwidth(25)
+fig.set_figheight(8)
+fig.set_figwidth(15)
 fig.suptitle("Reconstruction efficiency")
 
 
@@ -196,13 +198,18 @@ for typetrack in types:
                     break
 
             efficiencies.append(get_efficiency(current_item1, current_item2))
+            #print(filename, paths_list1, get_efficiency(current_item1, current_item2)*100)
 
         
         axes[filenamelists.index(filenamelist), types.index(typetrack)].set_title(typetrack.strip("_"))
-        axes[filenamelists.index(filenamelist), types.index(typetrack)].plot(xaxis, efficiencies, marker='x', linewidth=1, markersize=10)
+        #axes[filenamelists.index(filenamelist), types.index(typetrack)].plot(xaxis, efficiencies, marker='x', linewidth=1, markersize=10)
+        axes[filenamelists.index(filenamelist), types.index(typetrack)].scatter(xaxis, efficiencies, marker='x', linewidth=1)
 
         axes[filenamelists.index(filenamelist), types.index(typetrack)].set_xlabel(xlabels[filenamelists.index(filenamelist)])
         axes[filenamelists.index(filenamelist), types.index(typetrack)].set_ylabel("Efficiency")
+        
+    plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=None, hspace=0.4)
+
     fig.savefig("Efficiencies", bbox_inches='tight')
 
 
